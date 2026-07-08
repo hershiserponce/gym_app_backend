@@ -1,0 +1,247 @@
+﻿{
+    "permissions":  {
+                        "api::client.client":  {
+                                                   "controllers":  {
+                                                                       "client":  {
+                                                                                      "create":  {
+                                                                                                     "enabled":  true
+                                                                                                 },
+                                                                                      "delete":  {
+                                                                                                     "enabled":  true
+                                                                                                 },
+                                                                                      "findOne":  {
+                                                                                                      "enabled":  true
+                                                                                                  },
+                                                                                      "update":  {
+                                                                                                     "enabled":  true
+                                                                                                 },
+                                                                                      "find":  {
+                                                                                                   "enabled":  true
+                                                                                               }
+                                                                                  }
+                                                                   }
+                                               },
+                        "api::dashboard.dashboard":  {
+                                                         "controllers":  {
+                                                                             "dashboard":  {
+                                                                                               "revenueChart":  {
+                                                                                                                    "enabled":  true
+                                                                                                                },
+                                                                                               "stats":  {
+                                                                                                             "enabled":  true
+                                                                                                         }
+                                                                                           }
+                                                                         }
+                                                     },
+                        "api::audit-log.audit-log":  {
+                                                         "controllers":  {
+                                                                             "audit-log":  {
+                                                                                               "create":  {
+                                                                                                              "enabled":  true
+                                                                                                          },
+                                                                                               "delete":  {
+                                                                                                              "enabled":  true
+                                                                                                          },
+                                                                                               "findOne":  {
+                                                                                                               "enabled":  true
+                                                                                                           },
+                                                                                               "update":  {
+                                                                                                              "enabled":  true
+                                                                                                          },
+                                                                                               "find":  {
+                                                                                                            "enabled":  true
+                                                                                                        }
+                                                                                           }
+                                                                         }
+                                                     },
+                        "api::product-category.product-category":  {
+                                                                       "controllers":  {
+                                                                                           "product-category":  {
+                                                                                                                    "create":  {
+                                                                                                                                   "enabled":  true
+                                                                                                                               },
+                                                                                                                    "delete":  {
+                                                                                                                                   "enabled":  true
+                                                                                                                               },
+                                                                                                                    "findOne":  {
+                                                                                                                                    "enabled":  true
+                                                                                                                                },
+                                                                                                                    "update":  {
+                                                                                                                                   "enabled":  true
+                                                                                                                               },
+                                                                                                                    "find":  {
+                                                                                                                                 "enabled":  true
+                                                                                                                             }
+                                                                                                                }
+                                                                                       }
+                                                                   },
+                        "api::sale-item.sale-item":  {
+                                                         "controllers":  {
+                                                                             "sale-item":  {
+                                                                                               "create":  {
+                                                                                                              "enabled":  true
+                                                                                                          },
+                                                                                               "delete":  {
+                                                                                                              "enabled":  true
+                                                                                                          },
+                                                                                               "findOne":  {
+                                                                                                               "enabled":  true
+                                                                                                           },
+                                                                                               "update":  {
+                                                                                                              "enabled":  true
+                                                                                                          },
+                                                                                               "find":  {
+                                                                                                            "enabled":  true
+                                                                                                        }
+                                                                                           }
+                                                                         }
+                                                     },
+                        "api::client-membership.client-membership":  {
+                                                                         "controllers":  {
+                                                                                             "client-membership":  {
+                                                                                                                       "create":  {
+                                                                                                                                      "enabled":  true
+                                                                                                                                  },
+                                                                                                                       "delete":  {
+                                                                                                                                      "enabled":  true
+                                                                                                                                  },
+                                                                                                                       "findOne":  {
+                                                                                                                                       "enabled":  true
+                                                                                                                                   },
+                                                                                                                       "update":  {
+                                                                                                                                      "enabled":  true
+                                                                                                                                  },
+                                                                                                                       "find":  {
+                                                                                                                                    "enabled":  true
+                                                                                                                                }
+                                                                                                                   }
+                                                                                         }
+                                                                     },
+                        "api::product.product":  {
+                                                     "controllers":  {
+                                                                         "product":  {
+                                                                                         "create":  {
+                                                                                                        "enabled":  true
+                                                                                                    },
+                                                                                         "delete":  {
+                                                                                                        "enabled":  true
+                                                                                                    },
+                                                                                         "findOne":  {
+                                                                                                         "enabled":  true
+                                                                                                     },
+                                                                                         "update":  {
+                                                                                                        "enabled":  true
+                                                                                                    },
+                                                                                         "find":  {
+                                                                                                      "enabled":  true
+                                                                                                  }
+                                                                                     }
+                                                                     }
+                                                 },
+                        "api::sale.sale":  {
+                                               "controllers":  {
+                                                                   "sale":  {
+                                                                                "create":  {
+                                                                                               "enabled":  true
+                                                                                           },
+                                                                                "delete":  {
+                                                                                               "enabled":  true
+                                                                                           },
+                                                                                "findOne":  {
+                                                                                                "enabled":  true
+                                                                                            },
+                                                                                "update":  {
+                                                                                               "enabled":  true
+                                                                                           },
+                                                                                "find":  {
+                                                                                             "enabled":  true
+                                                                                         }
+                                                                            }
+                                                               }
+                                           },
+                        "api::membership.membership":  {
+                                                           "controllers":  {
+                                                                               "membership":  {
+                                                                                                  "create":  {
+                                                                                                                 "enabled":  true
+                                                                                                             },
+                                                                                                  "delete":  {
+                                                                                                                 "enabled":  true
+                                                                                                             },
+                                                                                                  "findOne":  {
+                                                                                                                  "enabled":  true
+                                                                                                              },
+                                                                                                  "update":  {
+                                                                                                                 "enabled":  true
+                                                                                                             },
+                                                                                                  "find":  {
+                                                                                                               "enabled":  true
+                                                                                                           }
+                                                                                              }
+                                                                           }
+                                                       },
+                        "api::payment.payment":  {
+                                                     "controllers":  {
+                                                                         "payment":  {
+                                                                                         "create":  {
+                                                                                                        "enabled":  true
+                                                                                                    },
+                                                                                         "delete":  {
+                                                                                                        "enabled":  true
+                                                                                                    },
+                                                                                         "findOne":  {
+                                                                                                         "enabled":  true
+                                                                                                     },
+                                                                                         "update":  {
+                                                                                                        "enabled":  true
+                                                                                                    },
+                                                                                         "find":  {
+                                                                                                      "enabled":  true
+                                                                                                  }
+                                                                                     }
+                                                                     }
+                                                 },
+                        "api::inventory-movement.inventory-movement":  {
+                                                                           "controllers":  {
+                                                                                               "inventory-movement":  {
+                                                                                                                          "create":  {
+                                                                                                                                         "enabled":  true
+                                                                                                                                     },
+                                                                                                                          "delete":  {
+                                                                                                                                         "enabled":  true
+                                                                                                                                     },
+                                                                                                                          "findOne":  {
+                                                                                                                                          "enabled":  true
+                                                                                                                                      },
+                                                                                                                          "update":  {
+                                                                                                                                         "enabled":  true
+                                                                                                                                     },
+                                                                                                                          "find":  {
+                                                                                                                                       "enabled":  true
+                                                                                                                                   }
+                                                                                                                      }
+                                                                                           }
+                                                                       },
+                        "api::setting.setting":  {
+                                                     "controllers":  {
+                                                                         "setting":  {
+                                                                                         "create":  {
+                                                                                                        "enabled":  true
+                                                                                                    },
+                                                                                         "delete":  {
+                                                                                                        "enabled":  true
+                                                                                                    },
+                                                                                         "findOne":  {
+                                                                                                         "enabled":  true
+                                                                                                     },
+                                                                                         "update":  {
+                                                                                                        "enabled":  true
+                                                                                                    },
+                                                                                         "find":  {
+                                                                                                      "enabled":  true
+                                                                                                  }
+                                                                                     }
+                                                                     }
+                                                 }
+                    }
+}
