@@ -1,5 +1,5 @@
 module.exports = {
-  kind: 'singleType',
+  kind: 'collectionType',
   collectionName: 'settings',
   info: {
     singularName: 'setting',
@@ -9,7 +9,6 @@ module.exports = {
   },
   options: {
     draftAndPublish: false,
-    singleType: true,
   },
   pluginOptions: {
     'content-manager': {
@@ -20,6 +19,14 @@ module.exports = {
     },
   },
   attributes: {
+    gym: {
+      type: 'relation',
+      relation: 'oneToOne',
+      target: 'api::gym.gym',
+      inversedBy: 'settings',
+      required: true,
+      unique: true,
+    },
     gymName: {
       type: 'string',
       required: true,

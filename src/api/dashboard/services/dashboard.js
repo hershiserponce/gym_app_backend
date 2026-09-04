@@ -1,5 +1,9 @@
+const { getTenant } = require('../../../utils/tenant')
+
 module.exports = {
-  async getStats() {
+  async getStats(ctx) {
+    const gym = await getTenant(ctx)
+    if (!gym) return null
     const now = new Date();
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
@@ -8,6 +12,7 @@ module.exports = {
       await Promise.all([
         strapi.db.query('api::payment.payment').findMany({
           where: {
+            gym: gym.id,
             paymentDate: {
               $gte: startOfDay.toISOString(),
               $lte: endOfDay.toISOString(),
@@ -16,6 +21,7 @@ module.exports = {
         }),
         strapi.db.query('api::sale.sale').findMany({
           where: {
+            gym: gym.id,
             saleDate: {
               $gte: startOfDay.toISOString(),
               $lte: endOfDay.toISOString(),
@@ -24,6 +30,7 @@ module.exports = {
         }),
         strapi.db.query('api::client.client').count({
           where: {
+            gym: gym.id,
             registrationDate: {
               $gte: startOfDay.toISOString(),
               $lte: endOfDay.toISOString(),
@@ -32,6 +39,7 @@ module.exports = {
         }),
         strapi.db.query('api::client-membership.client-membership').count({
           where: {
+            gym: gym.id,
             status: 'active',
           },
         }),
@@ -56,7 +64,9 @@ module.exports = {
     };
   },
 
-  async getRevenueChart() {
+  async getRevenueChart(ctx) {
+    const gym = await getTenant(ctx)
+    if (!gym) return []
     const days = 7;
     const chartData = [];
     const now = new Date();
@@ -71,6 +81,7 @@ module.exports = {
       const [payments, sales] = await Promise.all([
         strapi.db.query('api::payment.payment').findMany({
           where: {
+            gym: gym.id,
             paymentDate: {
               $gte: startOfDay.toISOString(),
               $lte: endOfDay.toISOString(),
@@ -79,6 +90,7 @@ module.exports = {
         }),
         strapi.db.query('api::sale.sale').findMany({
           where: {
+            gym: gym.id,
             saleDate: {
               $gte: startOfDay.toISOString(),
               $lte: endOfDay.toISOString(),

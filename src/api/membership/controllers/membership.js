@@ -1,3 +1,1 @@
-const { createCoreController } = require('@strapi/strapi').factories
-
-module.exports = createCoreController('api::membership.membership')
+module.exports = require('../../../utils/tenant').tenantController('api::membership.membership')

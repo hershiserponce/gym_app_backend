@@ -10,6 +10,7 @@ module.exports = {
     draftAndPublish: false,
   },
   attributes: {
+    gym: { type: 'relation', relation: 'manyToOne', target: 'api::gym.gym', inversedBy: 'productCategories', required: true },
     name: {
       type: 'string',
       required: true,

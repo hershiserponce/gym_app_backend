@@ -114,43 +114,6 @@ export interface AdminApiTokenPermission extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface AdminAuditLog extends Struct.CollectionTypeSchema {
-  collectionName: 'strapi_audit_logs';
-  info: {
-    displayName: 'Audit Log';
-    pluralName: 'audit-logs';
-    singularName: 'audit-log';
-  };
-  options: {
-    draftAndPublish: false;
-    timestamps: false;
-  };
-  pluginOptions: {
-    'content-manager': {
-      visible: false;
-    };
-    'content-type-builder': {
-      visible: false;
-    };
-  };
-  attributes: {
-    action: Schema.Attribute.String & Schema.Attribute.Required;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    date: Schema.Attribute.DateTime & Schema.Attribute.Required;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'admin::audit-log'> &
-      Schema.Attribute.Private;
-    payload: Schema.Attribute.JSON;
-    publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    user: Schema.Attribute.Relation<'oneToOne', 'admin::user'>;
-  };
-}
-
 export interface AdminPermission extends Struct.CollectionTypeSchema {
   collectionName: 'admin_permissions';
   info: {
@@ -497,6 +460,8 @@ export interface ApiAuditLogAuditLog extends Struct.CollectionTypeSchema {
     details: Schema.Attribute.JSON;
     entity: Schema.Attribute.String & Schema.Attribute.Required;
     entityId: Schema.Attribute.Integer;
+    gym: Schema.Attribute.Relation<'manyToOne', 'api::gym.gym'> &
+      Schema.Attribute.Required;
     ipAddress: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -537,6 +502,8 @@ export interface ApiClientMembershipClientMembership
       Schema.Attribute.Private;
     endDate: Schema.Attribute.Date & Schema.Attribute.Required;
     frozenDays: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    gym: Schema.Attribute.Relation<'manyToOne', 'api::gym.gym'> &
+      Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -582,6 +549,8 @@ export interface ApiClientClient extends Struct.CollectionTypeSchema {
     email: Schema.Attribute.Email & Schema.Attribute.Unique;
     fullName: Schema.Attribute.String & Schema.Attribute.Required;
     gender: Schema.Attribute.Enumeration<['male', 'female', 'other']>;
+    gym: Schema.Attribute.Relation<'manyToOne', 'api::gym.gym'> &
+      Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -607,6 +576,76 @@ export interface ApiClientClient extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiGymGym extends Struct.CollectionTypeSchema {
+  collectionName: 'gyms';
+  info: {
+    displayName: 'Gym';
+    pluralName: 'gyms';
+    singularName: 'gym';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    address: Schema.Attribute.String;
+    auditLogs: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::audit-log.audit-log'
+    >;
+    clientMemberships: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::client-membership.client-membership'
+    >;
+    clients: Schema.Attribute.Relation<'oneToMany', 'api::client.client'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    currency: Schema.Attribute.String & Schema.Attribute.DefaultTo<'MXN'>;
+    defaultMembershipDuration: Schema.Attribute.Integer &
+      Schema.Attribute.DefaultTo<30>;
+    email: Schema.Attribute.Email;
+    inventoryMovements: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::inventory-movement.inventory-movement'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::gym.gym'> &
+      Schema.Attribute.Private;
+    logo: Schema.Attribute.Media<'images'>;
+    lowStockThreshold: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<5>;
+    memberships: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::membership.membership'
+    >;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    payments: Schema.Attribute.Relation<'oneToMany', 'api::payment.payment'>;
+    phone: Schema.Attribute.String;
+    productCategories: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::product-category.product-category'
+    >;
+    products: Schema.Attribute.Relation<'oneToMany', 'api::product.product'>;
+    publishedAt: Schema.Attribute.DateTime;
+    receiptFooter: Schema.Attribute.RichText;
+    saleItems: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::sale-item.sale-item'
+    >;
+    sales: Schema.Attribute.Relation<'oneToMany', 'api::sale.sale'>;
+    settings: Schema.Attribute.Relation<'oneToOne', 'api::setting.setting'>;
+    slug: Schema.Attribute.UID<'name'> &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    users: Schema.Attribute.Relation<
+      'oneToMany',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
 export interface ApiInventoryMovementInventoryMovement
   extends Struct.CollectionTypeSchema {
   collectionName: 'inventory_movements';
@@ -623,6 +662,8 @@ export interface ApiInventoryMovementInventoryMovement
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    gym: Schema.Attribute.Relation<'manyToOne', 'api::gym.gym'> &
+      Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -684,6 +725,8 @@ export interface ApiMembershipMembership extends Struct.CollectionTypeSchema {
         },
         number
       >;
+    gym: Schema.Attribute.Relation<'manyToOne', 'api::gym.gym'> &
+      Schema.Attribute.Required;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -740,6 +783,8 @@ export interface ApiPaymentPayment extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    gym: Schema.Attribute.Relation<'manyToOne', 'api::gym.gym'> &
+      Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -782,6 +827,8 @@ export interface ApiProductCategoryProductCategory
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.RichText;
+    gym: Schema.Attribute.Relation<'manyToOne', 'api::gym.gym'> &
+      Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -829,6 +876,8 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     description: Schema.Attribute.RichText;
+    gym: Schema.Attribute.Relation<'manyToOne', 'api::gym.gym'> &
+      Schema.Attribute.Required;
     image: Schema.Attribute.Media<'images'>;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
@@ -894,6 +943,8 @@ export interface ApiSaleItemSaleItem extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    gym: Schema.Attribute.Relation<'manyToOne', 'api::gym.gym'> &
+      Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -959,6 +1010,8 @@ export interface ApiSaleSale extends Struct.CollectionTypeSchema {
         number
       > &
       Schema.Attribute.DefaultTo<0>;
+    gym: Schema.Attribute.Relation<'manyToOne', 'api::gym.gym'> &
+      Schema.Attribute.Required;
     items: Schema.Attribute.Relation<'oneToMany', 'api::sale-item.sale-item'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::sale.sale'> &
@@ -985,7 +1038,7 @@ export interface ApiSaleSale extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiSettingSetting extends Struct.SingleTypeSchema {
+export interface ApiSettingSetting extends Struct.CollectionTypeSchema {
   collectionName: 'settings';
   info: {
     description: '';
@@ -995,7 +1048,6 @@ export interface ApiSettingSetting extends Struct.SingleTypeSchema {
   };
   options: {
     draftAndPublish: false;
-    singleType: true;
   };
   pluginOptions: {
     'content-manager': {
@@ -1014,6 +1066,9 @@ export interface ApiSettingSetting extends Struct.SingleTypeSchema {
     defaultMembershipDuration: Schema.Attribute.Integer &
       Schema.Attribute.DefaultTo<30>;
     email: Schema.Attribute.Email;
+    gym: Schema.Attribute.Relation<'oneToOne', 'api::gym.gym'> &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique;
     gymName: Schema.Attribute.String & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -1488,7 +1543,6 @@ export interface PluginUsersPermissionsUser
   };
   options: {
     draftAndPublish: false;
-    timestamps: true;
   };
   attributes: {
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
@@ -1499,9 +1553,12 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.Private;
     email: Schema.Attribute.Email &
       Schema.Attribute.Required &
+      Schema.Attribute.Unique &
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    gym: Schema.Attribute.Relation<'manyToOne', 'api::gym.gym'> &
+      Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -1537,7 +1594,6 @@ declare module '@strapi/strapi' {
     export interface ContentTypeSchemas {
       'admin::api-token': AdminApiToken;
       'admin::api-token-permission': AdminApiTokenPermission;
-      'admin::audit-log': AdminAuditLog;
       'admin::permission': AdminPermission;
       'admin::role': AdminRole;
       'admin::session': AdminSession;
@@ -1547,6 +1603,7 @@ declare module '@strapi/strapi' {
       'api::audit-log.audit-log': ApiAuditLogAuditLog;
       'api::client-membership.client-membership': ApiClientMembershipClientMembership;
       'api::client.client': ApiClientClient;
+      'api::gym.gym': ApiGymGym;
       'api::inventory-movement.inventory-movement': ApiInventoryMovementInventoryMovement;
       'api::membership.membership': ApiMembershipMembership;
       'api::payment.payment': ApiPaymentPayment;
