@@ -45,11 +45,9 @@ async function validateRelations(uid, data, gymId) {
           where: { id: Number(value), gym: gymId },
         })
       } else {
-        const relEntity = await strapi.documents(attribute.target).findOne({ documentId: value })
-        if (relEntity) {
-          const relGymId = typeof relEntity.gym === 'object' ? relEntity.gym?.id : relEntity.gym
-          target = relGymId === gymId ? relEntity : null
-        }
+        target = await strapi.db.query(attribute.target).findOne({
+          where: { documentId: value, gym: gymId },
+        })
       }
       if (!target) {
         const error = new Error(`Relation ${name} does not belong to this gym`)
@@ -60,17 +58,46 @@ async function validateRelations(uid, data, gymId) {
   }
 }
 
+async function resolveRelationIds(uid, data) {
+  const schema = strapi.getModel(uid)
+  const resolved = { ...data }
+  for (const [name, attribute] of Object.entries(schema.attributes || {})) {
+    if (attribute.type !== 'relation' || name === 'gym' || data[name] == null) continue
+    const values = relationValues(data[name])
+    const resolvedValues = []
+    for (const relation of values) {
+      const value = relation && typeof relation === 'object'
+        ? (relation.documentId || relation.id)
+        : relation
+      if (value == null) continue
+      if (/^\d+$/.test(String(value))) {
+        resolvedValues.push(Number(value))
+      } else {
+        const entity = await strapi.db.query(attribute.target).findOne({
+          where: { documentId: value },
+        })
+        resolvedValues.push(entity ? entity.id : value)
+      }
+    }
+    if (resolvedValues.length === 1) {
+      resolved[name] = resolvedValues[0]
+    } else if (resolvedValues.length > 1) {
+      resolved[name] = resolvedValues
+    } else {
+      resolved[name] = null
+    }
+  }
+  return resolved
+}
+
 async function findTenantEntity(uid, id, gymId) {
   if (/^\d+$/.test(String(id))) {
     return strapi.db.query(uid).findOne({ where: { id: Number(id), gym: gymId } })
   }
-  const entity = await strapi.documents(uid).findOne({ documentId: id })
-  if (!entity) return null
-  const entityGymId = typeof entity.gym === 'object' ? entity.gym?.id : entity.gym
-  return entityGymId === gymId ? entity : null
+  return strapi.db.query(uid).findOne({ where: { documentId: id, gym: gymId } })
 }
 
-function tenantController(uid) {
+function tenantController(uid, hooks = {}) {
   return createCoreController(uid, ({ strapi }) => ({
     async find(ctx) {
       const gym = await getTenant(ctx)
@@ -95,8 +122,10 @@ function tenantController(uid) {
     async findOne(ctx) {
       const gym = await getTenant(ctx)
       if (!gym) return ctx.unauthorized()
-      if (!(await findTenantEntity(uid, ctx.params.id, gym.id))) return ctx.notFound()
-      return super.findOne(ctx)
+      const entity = await findTenantEntity(uid, ctx.params.id, gym.id)
+      if (!entity) return ctx.notFound()
+      const sanitized = await this.sanitizeOutput(entity, ctx)
+      return this.transformResponse(sanitized)
     },
 
     async create(ctx) {
@@ -105,8 +134,12 @@ function tenantController(uid) {
       const input = (ctx.request.body && ctx.request.body.data) || {}
       const data = { ...input, gym: gym.id }
       await validateRelations(uid, data, gym.id)
+      const resolved = await resolveRelationIds(uid, data)
 
-      const entity = await strapi.db.query(uid).create({ data })
+      const entity = await strapi.db.query(uid).create({ data: resolved })
+      if (hooks.afterCreate) {
+        await hooks.afterCreate(entity, { gym, data: resolved, ctx })
+      }
       return ctx.send({ data: entity })
     },
 
@@ -117,16 +150,17 @@ function tenantController(uid) {
       const input = (ctx.request.body && ctx.request.body.data) || {}
       const data = { ...input, gym: gym.id }
       await validateRelations(uid, data, gym.id)
+      const resolved = await resolveRelationIds(uid, data)
       let entity
       if (/^\d+$/.test(String(ctx.params.id))) {
         entity = await strapi.db.query(uid).update({
           where: { id: ctx.params.id },
-          data,
+          data: resolved,
         })
       } else {
-        entity = await strapi.documents(uid).update({
-          documentId: ctx.params.id,
-          data,
+        entity = await strapi.db.query(uid).update({
+          where: { documentId: ctx.params.id },
+          data: resolved,
         })
       }
       return ctx.send({ data: entity })
@@ -136,7 +170,16 @@ function tenantController(uid) {
       const gym = await getTenant(ctx)
       if (!gym) return ctx.unauthorized()
       if (!(await findTenantEntity(uid, ctx.params.id, gym.id))) return ctx.notFound()
-      return super.delete(ctx)
+      if (/^\d+$/.test(String(ctx.params.id))) {
+        const entity = await strapi.db.query(uid).delete({
+          where: { id: ctx.params.id },
+        })
+        return ctx.send({ data: entity })
+      }
+      const entity = await strapi.db.query(uid).delete({
+        where: { documentId: ctx.params.id },
+      })
+      return ctx.send({ data: entity })
     },
   }))
 }
