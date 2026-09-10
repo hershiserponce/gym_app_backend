@@ -29,10 +29,8 @@ module.exports = {
       type: 'enumeration',
       enum: ['male', 'female', 'other'],
     },
-    photo: {
-      type: 'media',
-      multiple: false,
-      allowedTypes: ['images'],
+    photoUrl: {
+      type: 'string',
     },
     notes: {
       type: 'richtext',

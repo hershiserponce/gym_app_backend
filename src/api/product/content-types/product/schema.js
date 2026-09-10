@@ -52,10 +52,8 @@ module.exports = {
     supplier: {
       type: 'string',
     },
-    image: {
-      type: 'media',
-      multiple: false,
-      allowedTypes: ['images'],
+    imageUrl: {
+      type: 'string',
     },
     isActive: {
       type: 'boolean',

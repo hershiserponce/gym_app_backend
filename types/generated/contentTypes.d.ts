@@ -564,7 +564,7 @@ export interface ApiClientClient extends Struct.CollectionTypeSchema {
     notes: Schema.Attribute.RichText;
     payments: Schema.Attribute.Relation<'oneToMany', 'api::payment.payment'>;
     phone: Schema.Attribute.String;
-    photo: Schema.Attribute.Media<'images'>;
+    photoUrl: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     registrationDate: Schema.Attribute.DateTime;
     sales: Schema.Attribute.Relation<'oneToMany', 'api::sale.sale'>;
@@ -878,7 +878,7 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
     description: Schema.Attribute.RichText;
     gym: Schema.Attribute.Relation<'manyToOne', 'api::gym.gym'> &
       Schema.Attribute.Required;
-    image: Schema.Attribute.Media<'images'>;
+    imageUrl: Schema.Attribute.String;
     isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<

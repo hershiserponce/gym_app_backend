@@ -8,7 +8,13 @@ const config: Core.Config.Middlewares = [
   'strapi::poweredBy',
   'strapi::query',
   'global::tenant',
-  'strapi::body',
+  {
+    name: 'strapi::body',
+    config: {
+      multipart: true,
+      formidable: { keepExtensions: true },
+    },
+  },
   'strapi::session',
   'strapi::favicon',
   'strapi::public',

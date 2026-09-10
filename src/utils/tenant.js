@@ -97,8 +97,9 @@ async function findTenantEntity(uid, id, gymId) {
   return strapi.db.query(uid).findOne({ where: { documentId: id, gym: gymId } })
 }
 
-function tenantController(uid, hooks = {}) {
+function tenantController(uid, hooks = {}, customMethods = {}) {
   return createCoreController(uid, ({ strapi }) => ({
+    ...customMethods,
     async find(ctx) {
       const gym = await getTenant(ctx)
       if (!gym) return ctx.unauthorized()
