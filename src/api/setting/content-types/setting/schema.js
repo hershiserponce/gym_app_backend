@@ -45,10 +45,10 @@ module.exports = {
       multiple: false,
       allowedTypes: ['images'],
     },
-    currency: {
-      type: 'string',
-      default: 'MXN',
-    },
+currency: {
+  type: 'string',
+  default: 'NIO',
+},
     receiptFooter: {
       type: 'richtext',
     },

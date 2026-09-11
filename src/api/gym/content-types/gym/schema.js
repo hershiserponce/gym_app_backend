@@ -13,7 +13,7 @@ module.exports = {
     phone: { type: 'string' },
     email: { type: 'email' },
     logo: { type: 'media', multiple: false, allowedTypes: ['images'] },
-    currency: { type: 'string', default: 'MXN' },
+    currency: { type: 'string', default: 'NIO' },
     receiptFooter: { type: 'richtext' },
     defaultMembershipDuration: { type: 'integer', default: 30 },
     lowStockThreshold: { type: 'integer', default: 5 },

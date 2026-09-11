@@ -600,7 +600,7 @@ export interface ApiGymGym extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    currency: Schema.Attribute.String & Schema.Attribute.DefaultTo<'MXN'>;
+    currency: Schema.Attribute.String & Schema.Attribute.DefaultTo<'NIO'>;
     defaultMembershipDuration: Schema.Attribute.Integer &
       Schema.Attribute.DefaultTo<30>;
     email: Schema.Attribute.Email;
@@ -1062,7 +1062,7 @@ export interface ApiSettingSetting extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    currency: Schema.Attribute.String & Schema.Attribute.DefaultTo<'MXN'>;
+    currency: Schema.Attribute.String & Schema.Attribute.DefaultTo<'NIO'>;
     defaultMembershipDuration: Schema.Attribute.Integer &
       Schema.Attribute.DefaultTo<30>;
     email: Schema.Attribute.Email;
