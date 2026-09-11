@@ -31,6 +31,7 @@ module.exports = {
     sales: { type: 'relation', relation: 'oneToMany', target: 'api::sale.sale', mappedBy: 'gym' },
     saleItems: { type: 'relation', relation: 'oneToMany', target: 'api::sale-item.sale-item', mappedBy: 'gym' },
     auditLogs: { type: 'relation', relation: 'oneToMany', target: 'api::audit-log.audit-log', mappedBy: 'gym' },
+    suppliers: { type: 'relation', relation: 'oneToMany', target: 'api::supplier.supplier', mappedBy: 'gym' },
     settings: {
       type: 'relation', relation: 'oneToOne',
       target: 'api::setting.setting', mappedBy: 'gym',

@@ -50,7 +50,10 @@ module.exports = {
       min: 0,
     },
     supplier: {
-      type: 'string',
+      type: 'relation',
+      relation: 'manyToOne',
+      target: 'api::supplier.supplier',
+      inversedBy: 'products',
     },
     imageUrl: {
       type: 'string',
