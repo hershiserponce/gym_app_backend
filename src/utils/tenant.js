@@ -104,6 +104,10 @@ function tenantController(uid, hooks = {}, customMethods = {}) {
       const gym = await getTenant(ctx)
       if (!gym) return ctx.unauthorized()
 
+      if (hooks.beforeFind) {
+        await hooks.beforeFind({ gym, ctx })
+      }
+
       await this.validateQuery(ctx)
       const sanitizedQuery = await this.sanitizeQuery(ctx)
 

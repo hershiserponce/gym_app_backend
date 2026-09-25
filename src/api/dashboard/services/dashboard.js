@@ -41,6 +41,9 @@ module.exports = {
           where: {
             gym: gym.id,
             status: 'active',
+            endDate: {
+              $gte: new Date().toISOString().slice(0, 10),
+            },
           },
         }),
       ]);

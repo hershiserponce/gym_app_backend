@@ -6,6 +6,28 @@ function toISODate(date) {
   return date.toISOString().slice(0, 10)
 }
 
+async function expireOverdueMemberships(gymId) {
+  const today = toISODate(new Date())
+  const where = { status: 'active', endDate: { $lt: today } }
+  if (gymId != null) where.gym = { id: gymId }
+
+  const overdue = await strapi.db.query(CLIENT_MEMBERSHIP_UID).findMany({
+    where,
+    select: ['id'],
+  })
+
+  await Promise.all(
+    overdue.map((record) =>
+      strapi.db.query(CLIENT_MEMBERSHIP_UID).update({
+        where: { id: record.id },
+        data: { status: 'expired' },
+      })
+    )
+  )
+
+  return overdue.length
+}
+
 async function syncClientMembershipFromPayment(payment, gym) {
   if (!payment || !gym) return null
 
@@ -27,10 +49,6 @@ async function syncClientMembershipFromPayment(payment, gym) {
     : 30
 
   const base = fullPayment.paymentDate ? new Date(fullPayment.paymentDate) : new Date()
-  const startDate = toISODate(base)
-  const endDate = new Date(base)
-  endDate.setDate(endDate.getDate() + duration)
-
   const today = toISODate(new Date())
 
   const existing = await strapi.db.query(CLIENT_MEMBERSHIP_UID).findOne({
@@ -40,30 +58,32 @@ async function syncClientMembershipFromPayment(payment, gym) {
       status: 'active',
       gym: gym.id,
     },
+    orderBy: { endDate: 'desc' },
   })
 
-  let clientMembership
+  let startDate = toISODate(base)
   if (existing && existing.endDate >= today) {
-    const newEnd = new Date(existing.endDate)
-    newEnd.setDate(newEnd.getDate() + duration)
-    clientMembership = await strapi.db.query(CLIENT_MEMBERSHIP_UID).update({
-      where: { id: existing.id },
-      data: { endDate: toISODate(newEnd) },
-    })
-  } else {
-    clientMembership = await strapi.db.query(CLIENT_MEMBERSHIP_UID).create({
-      data: {
-        gym: gym.id,
-        client: client.id,
-        membership: membershipRef.id,
-        startDate,
-        endDate: toISODate(endDate),
-        status: 'active',
-        autoRenew: false,
-        frozenDays: 0,
-      },
-    })
+    const continuation = new Date(existing.endDate)
+    continuation.setDate(continuation.getDate() + 1)
+    startDate = toISODate(continuation)
   }
+
+  const start = new Date(startDate)
+  const endDate = new Date(start)
+  endDate.setDate(endDate.getDate() + duration)
+
+  const clientMembership = await strapi.db.query(CLIENT_MEMBERSHIP_UID).create({
+    data: {
+      gym: gym.id,
+      client: client.id,
+      membership: membershipRef.id,
+      startDate,
+      endDate: toISODate(endDate),
+      status: 'active',
+      autoRenew: false,
+      frozenDays: 0,
+    },
+  })
 
   if (clientMembership) {
     await strapi.db.query(PAYMENT_UID).update({
@@ -75,4 +95,4 @@ async function syncClientMembershipFromPayment(payment, gym) {
   return clientMembership
 }
 
-module.exports = { syncClientMembershipFromPayment }
+module.exports = { syncClientMembershipFromPayment, expireOverdueMemberships }
